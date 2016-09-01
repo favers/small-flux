@@ -21052,6 +21052,10 @@ var _Dispatcher = require('./Dispatcher');
 
 var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
 
+var _WebAPI = require('./WebAPI');
+
+var _WebAPI2 = _interopRequireDefault(_WebAPI);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -21070,6 +21074,17 @@ var Actions = function () {
             };
             _Dispatcher2.default.dispatch(action);
         }
+    }, {
+        key: 'getAll',
+        value: function getAll() {
+            _WebAPI2.default.getAll(function (data) {
+                var action = {
+                    actionType: 'getAll',
+                    list: data
+                };
+                _Dispatcher2.default.dispatch(action);
+            });
+        }
     }]);
 
     return Actions;
@@ -21077,7 +21092,7 @@ var Actions = function () {
 
 module.exports = Actions;
 
-},{"./Dispatcher":175}],174:[function(require,module,exports){
+},{"./Dispatcher":175,"./WebAPI":178}],174:[function(require,module,exports){
 'use strict';
 
 var _List = require('./List');
@@ -21092,27 +21107,25 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Dispatcher = require('./Dispatcher');
-
-var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_Dispatcher2.default.use(function log(action, next) {
-    setTimeout(function () {
-        console.log('---Log---', action.actionType);
-        next();
-    }, 1000);
-}).use(function test(action, next) {
-    setTimeout(function () {
-        console.log('---Test---', action.actionType);
-        next();
-    }, 1000);
-});
+// 中间件测试
+// import Dispatcher from './Dispatcher'
+// Dispatcher.use(function log(action, next) {
+//     setTimeout(function() {
+//         console.log('---Log---', action.actionType)
+//         next()
+//     }, 1000)
+// }).use(function test(action, next) {
+//     setTimeout(function() {
+//         console.log('---Test---', action.actionType)
+//         next()
+//     }, 1000)
+// })
 
 _reactDom2.default.render(_react2.default.createElement(_List2.default, null), document.getElementById('app'));
 
-},{"./Dispatcher":175,"./List":176,"react":172,"react-dom":29}],175:[function(require,module,exports){
+},{"./List":176,"react":172,"react-dom":29}],175:[function(require,module,exports){
 "use strict";
 
 var storeCallbackList = [];
@@ -21226,6 +21239,7 @@ var List = function (_React$Component) {
         value: function componentDidMount() {
             var _this2 = this;
 
+            actions.getAll();
             store.on('change', function (list) {
                 _this2.setState({ list: list });
             });
@@ -21290,6 +21304,10 @@ var Store = function (_EventEmitter) {
                 case 'add':
                     _this._add(action.name);
                     break;
+                case 'getAll':
+                    _this._list = action.list;
+                    _this.emit('change', _this.list);
+                    break;
             }
         });
         return _this;
@@ -21315,4 +21333,15 @@ var Store = function (_EventEmitter) {
 
 module.exports = Store;
 
-},{"./Dispatcher":175,"events":1}]},{},[174]);
+},{"./Dispatcher":175,"events":1}],178:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+    getAll: function getAll(callback) {
+        setTimeout(function () {
+            callback(['aaa', 'bbb', 'ccc']);
+        }, 2000);
+    }
+};
+
+},{}]},{},[174]);

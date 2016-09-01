@@ -5,10 +5,14 @@ class Store extends EventEmitter {
     constructor() {
         super()
         this._list = []
-        Dispatcher.register(action=>{
+        Dispatcher.register(action => {
             switch (action.actionType) {
                 case 'add':
                     this._add(action.name)
+                    break
+                case 'getAll':
+                    this._list = action.list
+                    this.emit('change', this.list)
                     break
             }
         })

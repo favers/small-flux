@@ -18,6 +18,7 @@ export default class List extends React.Component {
         this.refs.nameInput.value = ''
     }
     componentDidMount() {
+        actions.getAll()
         store.on('change', list => {
             this.setState({ list })
         })

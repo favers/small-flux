@@ -1,4 +1,5 @@
 import Dispatcher from './Dispatcher'
+import WebAPI from './WebAPI'
 
 class Actions {
     add(name) {
@@ -7,6 +8,15 @@ class Actions {
             name
         }
         Dispatcher.dispatch(action)
+    }
+    getAll() {
+        WebAPI.getAll(function(data) {
+            let action = {
+                actionType: 'getAll',
+                list: data
+            }
+            Dispatcher.dispatch(action)
+        })
     }
 }
 
