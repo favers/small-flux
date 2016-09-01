@@ -21092,20 +21092,55 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _Dispatcher = require('./Dispatcher');
+
+var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_Dispatcher2.default.use(function log(action, next) {
+    setTimeout(function () {
+        console.log('---Log---', action.actionType);
+        next();
+    }, 1000);
+}).use(function test(action, next) {
+    setTimeout(function () {
+        console.log('---Test---', action.actionType);
+        next();
+    }, 1000);
+});
 
 _reactDom2.default.render(_react2.default.createElement(_List2.default, null), document.getElementById('app'));
 
-},{"./List":176,"react":172,"react-dom":29}],175:[function(require,module,exports){
+},{"./Dispatcher":175,"./List":176,"react":172,"react-dom":29}],175:[function(require,module,exports){
 "use strict";
 
 var storeCallbackList = [];
+var middlewareList = [];
 
 module.exports = {
+    use: function use(middleware) {
+        middlewareList.push(middleware);
+        return this;
+    },
     register: function register(storeCallback) {
         storeCallbackList.push(storeCallback);
     },
     dispatch: function dispatch(action) {
+        var index = -1;
+        var _this = this;
+
+        function next() {
+            var middle = middlewareList[++index];
+            if (middle) {
+                middle(action, next);
+            } else {
+                _this._dispatch(action);
+            }
+        }
+        next();
+    },
+    _dispatch: function _dispatch(action) {
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
