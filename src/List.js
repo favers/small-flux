@@ -1,7 +1,8 @@
 import React from 'react'
 import Store from './Store'
-
+import Actions from './Actions'
 const store = new Store()
+const actions = new Actions(store)
 
 export default class List extends React.Component {
     constructor(props) {
@@ -12,7 +13,7 @@ export default class List extends React.Component {
     }
     add() {
         // 测试代码
-        store._add(this.refs.nameInput.value)
+        actions.add(this.refs.nameInput.value)
         this.refs.nameInput.value = ''
     }
     componentDidMount() {

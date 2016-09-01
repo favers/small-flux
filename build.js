@@ -21046,6 +21046,34 @@ module.exports = require('./lib/React');
 },{"./lib/React":55}],173:[function(require,module,exports){
 'use strict';
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var store = Symbol('store');
+
+var Actions = function () {
+    function Actions(_store) {
+        _classCallCheck(this, Actions);
+
+        this[store] = _store;
+    }
+
+    _createClass(Actions, [{
+        key: 'add',
+        value: function add(name) {
+            this[store]._add(name);
+        }
+    }]);
+
+    return Actions;
+}();
+
+module.exports = Actions;
+
+},{}],174:[function(require,module,exports){
+'use strict';
+
 var _List = require('./List');
 
 var _List2 = _interopRequireDefault(_List);
@@ -21062,7 +21090,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_List2.default, null), document.getElementById('app'));
 
-},{"./List":174,"react":172,"react-dom":29}],174:[function(require,module,exports){
+},{"./List":175,"react":172,"react-dom":29}],175:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21079,6 +21107,10 @@ var _Store = require('./Store');
 
 var _Store2 = _interopRequireDefault(_Store);
 
+var _Actions = require('./Actions');
+
+var _Actions2 = _interopRequireDefault(_Actions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -21088,6 +21120,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var store = new _Store2.default();
+var actions = new _Actions2.default(store);
 
 var List = function (_React$Component) {
     _inherits(List, _React$Component);
@@ -21107,7 +21140,7 @@ var List = function (_React$Component) {
         key: 'add',
         value: function add() {
             // 测试代码
-            store._add(this.refs.nameInput.value);
+            actions.add(this.refs.nameInput.value);
             this.refs.nameInput.value = '';
         }
     }, {
@@ -21151,7 +21184,7 @@ var List = function (_React$Component) {
 
 exports.default = List;
 
-},{"./Store":175,"react":172}],175:[function(require,module,exports){
+},{"./Actions":173,"./Store":176,"react":172}],176:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -21195,4 +21228,4 @@ var Store = function (_EventEmitter) {
 
 module.exports = Store;
 
-},{"events":1}]},{},[173]);
+},{"events":1}]},{},[174]);
