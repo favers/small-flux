@@ -1,8 +1,8 @@
 import React from 'react'
 import Store from './Store'
 import Actions from './Actions'
-const store = new Store()
-const actions = new Actions(store)
+const actions = new Actions()
+const store = new Store(actions)
 
 export default class List extends React.Component {
     constructor(props) {

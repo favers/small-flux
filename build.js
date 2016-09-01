@@ -21050,28 +21050,38 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var store = Symbol('store');
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-var Actions = function () {
-    function Actions(_store) {
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var EventEmitter = require('events').EventEmitter;
+
+var Actions = function (_EventEmitter) {
+    _inherits(Actions, _EventEmitter);
+
+    function Actions() {
         _classCallCheck(this, Actions);
 
-        this[store] = _store;
+        return _possibleConstructorReturn(this, (Actions.__proto__ || Object.getPrototypeOf(Actions)).call(this));
     }
 
     _createClass(Actions, [{
         key: 'add',
         value: function add(name) {
-            this[store]._add(name);
+            var action = {
+                actionType: 'add',
+                name: name
+            };
+            this.emit('call', action);
         }
     }]);
 
     return Actions;
-}();
+}(EventEmitter);
 
 module.exports = Actions;
 
-},{}],174:[function(require,module,exports){
+},{"events":1}],174:[function(require,module,exports){
 'use strict';
 
 var _List = require('./List');
@@ -21119,8 +21129,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var store = new _Store2.default();
-var actions = new _Actions2.default(store);
+var actions = new _Actions2.default();
+var store = new _Store2.default(actions);
 
 var List = function (_React$Component) {
     _inherits(List, _React$Component);
@@ -21200,12 +21210,19 @@ var EventEmitter = require('events').EventEmitter;
 var Store = function (_EventEmitter) {
     _inherits(Store, _EventEmitter);
 
-    function Store() {
+    function Store(actions) {
         _classCallCheck(this, Store);
 
         var _this = _possibleConstructorReturn(this, (Store.__proto__ || Object.getPrototypeOf(Store)).call(this));
 
         _this._list = [];
+        actions.on('call', function (action) {
+            switch (action.actionType) {
+                case 'add':
+                    _this._add(action.name);
+                    break;
+            }
+        });
         return _this;
     }
 

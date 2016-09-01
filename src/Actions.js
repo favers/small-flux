@@ -1,10 +1,15 @@
-const store = Symbol('store')
-class Actions {
-    constructor(_store) {
-        this[store] = _store
+const EventEmitter = require('events').EventEmitter
+
+class Actions extends EventEmitter {
+    constructor() {
+        super()
     }
     add(name) {
-        this[store]._add(name)
+        let action = {
+            actionType: 'add',
+            name
+        }
+        this.emit('call', action)
     }
 }
 
