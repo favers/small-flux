@@ -21048,21 +21048,17 @@ module.exports = require('./lib/React');
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Dispatcher = require('./Dispatcher');
+
+var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var EventEmitter = require('events').EventEmitter;
-
-var Actions = function (_EventEmitter) {
-    _inherits(Actions, _EventEmitter);
-
+var Actions = function () {
     function Actions() {
         _classCallCheck(this, Actions);
-
-        return _possibleConstructorReturn(this, (Actions.__proto__ || Object.getPrototypeOf(Actions)).call(this));
     }
 
     _createClass(Actions, [{
@@ -21072,16 +21068,16 @@ var Actions = function (_EventEmitter) {
                 actionType: 'add',
                 name: name
             };
-            this.emit('call', action);
+            _Dispatcher2.default.dispatch(action);
         }
     }]);
 
     return Actions;
-}(EventEmitter);
+}();
 
 module.exports = Actions;
 
-},{"events":1}],174:[function(require,module,exports){
+},{"./Dispatcher":175}],174:[function(require,module,exports){
 'use strict';
 
 var _List = require('./List');
@@ -21100,7 +21096,44 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_List2.default, null), document.getElementById('app'));
 
-},{"./List":175,"react":172,"react-dom":29}],175:[function(require,module,exports){
+},{"./List":176,"react":172,"react-dom":29}],175:[function(require,module,exports){
+"use strict";
+
+var storeCallbackList = [];
+
+module.exports = {
+    register: function register(storeCallback) {
+        storeCallbackList.push(storeCallback);
+    },
+    dispatch: function dispatch(action) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = storeCallbackList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var callback = _step.value;
+
+                callback(action);
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
+    }
+};
+
+},{}],176:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21130,7 +21163,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var actions = new _Actions2.default();
-var store = new _Store2.default(actions);
+var store = new _Store2.default();
 
 var List = function (_React$Component) {
     _inherits(List, _React$Component);
@@ -21194,7 +21227,7 @@ var List = function (_React$Component) {
 
 exports.default = List;
 
-},{"./Actions":173,"./Store":176,"react":172}],176:[function(require,module,exports){
+},{"./Actions":173,"./Store":177,"react":172}],177:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -21206,17 +21239,18 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var EventEmitter = require('events').EventEmitter;
+var Dispatcher = require('./Dispatcher');
 
 var Store = function (_EventEmitter) {
     _inherits(Store, _EventEmitter);
 
-    function Store(actions) {
+    function Store() {
         _classCallCheck(this, Store);
 
         var _this = _possibleConstructorReturn(this, (Store.__proto__ || Object.getPrototypeOf(Store)).call(this));
 
         _this._list = [];
-        actions.on('call', function (action) {
+        Dispatcher.register(function (action) {
             switch (action.actionType) {
                 case 'add':
                     _this._add(action.name);
@@ -21230,6 +21264,7 @@ var Store = function (_EventEmitter) {
         key: '_add',
         value: function _add(item) {
             this._list.push(item);
+
             // 触发change事件
             this.emit('change', this.list);
         }
@@ -21245,4 +21280,4 @@ var Store = function (_EventEmitter) {
 
 module.exports = Store;
 
-},{"events":1}]},{},[174]);
+},{"./Dispatcher":175,"events":1}]},{},[174]);

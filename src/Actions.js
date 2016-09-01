@@ -1,15 +1,12 @@
-const EventEmitter = require('events').EventEmitter
+import Dispatcher from './Dispatcher'
 
-class Actions extends EventEmitter {
-    constructor() {
-        super()
-    }
+class Actions {
     add(name) {
         let action = {
             actionType: 'add',
             name
         }
-        this.emit('call', action)
+        Dispatcher.dispatch(action)
     }
 }
 

@@ -1,10 +1,11 @@
 const EventEmitter = require('events').EventEmitter
+const Dispatcher = require('./Dispatcher')
 
 class Store extends EventEmitter {
-    constructor(actions) {
+    constructor() {
         super()
         this._list = []
-        actions.on('call', action => {
+        Dispatcher.register(action=>{
             switch (action.actionType) {
                 case 'add':
                     this._add(action.name)
